@@ -9,6 +9,9 @@ class Trade:
     open_datetime = None
     close_datetime = None
 
+    def __repr__(self):
+        return 'Price: {} Volume: {} Status: {}'.format(self.open_price, self.volume, self.status)
+
     def open(self, datetime, price, volume):
         self.status = 'OPEN'
         self.open_price = price
