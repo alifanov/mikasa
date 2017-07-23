@@ -60,6 +60,7 @@ class BT:
         return 1.0 * (self.end_balance - self.start_balance) / self.start_balance
 
     def go(self):
+        self.stop()
         return next(self.ds)
 
     def run(self):
