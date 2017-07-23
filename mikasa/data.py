@@ -37,7 +37,7 @@ class DataSeries:
         return self
 
     def is_end(self):
-        return self.index == self.data.shape[0]
+        return self.index == (self.data.shape[0] - 1)
 
     def __next__(self):
         value = self.get_dot(self.index)
