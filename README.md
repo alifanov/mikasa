@@ -4,6 +4,12 @@ Simple backtesting tool
 
 Project named after person of "Attack on Titan"
 
+## Installation
+
+```python
+pip install git+https://github.com/alifanov/mikasa.git
+```
+
 ## Usage
 
 ```python
