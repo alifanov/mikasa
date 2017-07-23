@@ -56,5 +56,3 @@ print('ROI: ${:.2%}'.format(bt.get_roi()))
 # plot data and indicators
 bt.plot()
 ```
-
-**Project named after person of "Attack on Titan"**
