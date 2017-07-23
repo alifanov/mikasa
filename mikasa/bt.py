@@ -56,6 +56,9 @@ class BT:
     def get_roi(self):
         return 1.0 * (self.end_balance - self.start_balance) / self.start_balance
 
+    def go(self):
+        return next(self.ds)
+
     def run(self):
         for _ in self.ds:
             self.process_bar()
