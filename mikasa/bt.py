@@ -50,23 +50,18 @@ class BT:
     def process_bar(self):
         pass
 
-    def stop(self):
-        self.end_balance = self.balance
-
     def get_profit(self):
-        return self.end_balance - self.start_balance
+        return self.balance - self.start_balance
 
     def get_roi(self):
-        return 1.0 * (self.end_balance - self.start_balance) / self.start_balance
+        return 1.0 * self.get_profit() / self.start_balance
 
     def go(self):
-        self.stop()
         return next(self.ds)
 
     def run(self):
         for _ in self.ds:
             self.process_bar()
-        self.stop()
 
     def plot(self):
         data = self.ds.data
