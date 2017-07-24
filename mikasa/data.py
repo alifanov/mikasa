@@ -9,12 +9,16 @@ class DataPoint:
         return self.dt[key]
 
 
+class DataSeriesException(Exception):
+    pass
+
+
 class DataSeries:
     def __init__(self, data, index=0):
         self.data = StockDataFrame.retype(data.copy())
         self.index = index
         self.indicators = []
-        self.data.set_index('index')
+        self.data.set_index('datetime')
         data_dict = self.data.to_dict(orient='split')
         self._data = data_dict['data']
         self._columns = data_dict['columns']
@@ -27,9 +31,14 @@ class DataSeries:
         self._columns = data_dict['columns']
 
     def get_dot(self, index):
-        return {k: v for k,v in zip(self._columns, self._data[index])}
+        return {k: v for k, v in zip(self._columns, self._data[index])}
 
     def __getitem__(self, index):
+        if (index + self.index) < 0:
+            raise DataSeriesException('Result index is negative. Inner index: {}. Parameter index: {}'.format(
+                self.index,
+                index
+            ))
         return DataPoint(self.get_dot(index + self.index))
 
     def __iter__(self):
@@ -45,5 +54,3 @@ class DataSeries:
         if self.index >= self.data.shape[0]:
             raise StopIteration
         return DataPoint(value)
-
-

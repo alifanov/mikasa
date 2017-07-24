@@ -1,3 +1,5 @@
 pandas
 numpy
 stockstats
+pytest
+matplotlib
