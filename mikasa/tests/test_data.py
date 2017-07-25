@@ -5,6 +5,7 @@ from unittest import TestCase
 
 from .dataset import TEST_DATASET
 
+
 class DataTestCase(TestCase):
     def test_datapoint(self):
         dp = DataPoint({'foo': 'bar'})
