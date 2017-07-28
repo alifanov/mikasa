@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/alifanov/mikasa/tree/master.svg?style=svg)](https://circleci.com/gh/alifanov/mikasa/tree/master)
+
 # Mikasa
 
 Simple backtesting tool
