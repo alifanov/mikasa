@@ -1,5 +1,7 @@
 [![CircleCI](https://circleci.com/gh/alifanov/mikasa/tree/master.svg?style=shield)](https://circleci.com/gh/alifanov/mikasa/tree/master)
 
+[![Code Climate](https://codeclimate.com/github/alifanov/mikasa/badges/gpa.svg)](https://codeclimate.com/github/alifanov/mikasa)
+
 # Mikasa
 
 Simple backtesting tool
