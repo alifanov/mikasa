@@ -9,7 +9,7 @@ class Trade:
     open_datetime = None
     close_datetime = None
 
-    def __repr__(self):
+    def __repr__(self): # pragma: no cover
         return 'Price: {} Volume: {} Status: {}'.format(self.open_price, self.volume, self.status)
 
     def open(self, datetime, price, volume):
@@ -57,13 +57,14 @@ class BT:
         return 1.0 * self.get_profit() / self.start_balance
 
     def go(self):
-        return next(self.ds)
+        return self.ds.next()
 
     def run(self):
-        for _ in self.ds:
+        while not self.ds.is_end():
             self.process_bar()
+            self.ds.next()
 
-    def plot(self):
+    def plot(self): # pragma: no cover
         data = self.ds.data
         data = data.set_index('datetime')
         headers = ['close']

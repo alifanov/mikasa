@@ -35,6 +35,9 @@ class BTTestCase(TestCase):
         bt = BT(ds, balance=1.0)
         self.assertEqual(bt.balance, 1.0)
 
+        bt.process_bar()
+        self.assertEqual(bt.balance, 1.0)
+
         bt.buy(ds[0].close, 1.0)
         self.assertIsNotNone(bt.position)
 

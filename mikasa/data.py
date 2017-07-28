@@ -30,8 +30,16 @@ class DataSeries:
         self._data = data_dict['data']
         self._columns = data_dict['columns']
 
+    @property
+    def length(self):
+        return self.data.shape[0]
+
     def get_dot(self, index):
         return {k: v for k, v in zip(self._columns, self._data[index])}
+
+    def next(self):
+        self.index += 1
+        return self._data[self.index]
 
     def __getitem__(self, index):
         if (index + self.index) < 0:
@@ -41,16 +49,5 @@ class DataSeries:
             ))
         return DataPoint(self.get_dot(index + self.index))
 
-    def __iter__(self):
-        self.index = 0
-        return self
-
     def is_end(self):
         return self.index == (self.data.shape[0] - 1)
-
-    def __next__(self):
-        value = self.get_dot(self.index)
-        self.index += 1
-        if self.index >= self.data.shape[0]:
-            raise StopIteration
-        return DataPoint(value)

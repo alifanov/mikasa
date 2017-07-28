@@ -1,6 +1,8 @@
+import pytest
+
 import pandas as pd
 
-from ..data import DataPoint, DataSeries
+from ..data import DataPoint, DataSeries, DataSeriesException
 from unittest import TestCase
 
 from .dataset import TEST_DATASET
@@ -18,15 +20,27 @@ class DataTestCase(TestCase):
             'High': 'high',
             'Low': 'low',
             'Close': 'close',
+            'Volume': 'volume',
         })
         ds = DataSeries(df)
         self.assertEqual(ds.index, 0)
+        self.assertEqual(ds.length, 3)
 
         self.assertEqual(ds[0].close, 1.5)
         self.assertEqual(ds.get_dot(0)['close'], 1.5)
 
-        next(ds)
+        ds.next()
         self.assertEqual(ds.index, 1)
-        next(ds)
+
+        ds.next()
         self.assertEqual(ds.index, 2)
         self.assertEqual(ds.is_end(), True)
+
+        self.assertEqual(ds[-2].close, 1.5)
+
+        df_dict = df.to_dict(orient='split')
+        self.assertEqual(ds._columns, df_dict['columns'])
+        self.assertEqual(ds._data, df_dict['data'])
+
+        with pytest.raises(DataSeriesException):
+            ds[-3]
