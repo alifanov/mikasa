@@ -19,9 +19,6 @@ jobs:
 
     steps:
       - checkout
-      - run:
-        name: Install TKInter
-        command: 'sudo apt-get install python3-tk'
 
       # Download and cache dependencies
       - restore_cache:
