@@ -27,7 +27,6 @@ class DataTestCase(TestCase):
         self.assertEqual(ds.length, 3)
 
         self.assertEqual(ds[0].close, 1.5)
-        self.assertEqual(ds.get_dot(0)['close'], 1.5)
 
         ds.next()
         self.assertEqual(ds.index, 1)
@@ -37,10 +36,6 @@ class DataTestCase(TestCase):
         self.assertEqual(ds.is_end(), True)
 
         self.assertEqual(ds[-2].close, 1.5)
-
-        df_dict = df.to_dict(orient='split')
-        self.assertEqual(ds._columns, df_dict['columns'])
-        self.assertEqual(ds._data, df_dict['data'])
 
         with pytest.raises(DataSeriesException):
             ds[-3]

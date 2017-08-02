@@ -20,17 +20,12 @@ from mikasa import BT, DataSeries, SMAIndicator
 
 # create strategy for backtesting
 class SMABT(BT):
-    def __init__(self, ds, balance, period):
-        super(SMABT, self).__init__(ds, balance)
-        # add indicator
-        self.ds.add_indicator(SMAIndicator(period=period))
-
     # set up how to process each bar
     def process_bar(self):
         if not self.position:
             if self.ds[0].sma and self.ds[-1].close < self.ds[-1].sma:
                 if self.ds[0].close > self.ds[0].sma:
-                    self.buy(self.ds[0].close, 1000.0)
+                    self.buy(self.ds[0].close, 500.0)
         else:
             if self.ds[0].sma and self.ds[-1].close > self.ds[-1].sma:
                 if self.ds[0].close < self.ds[0].sma:
@@ -47,10 +42,12 @@ df = pd.read_csv('btc_etc.csv').rename(columns={
 })
 
 # create DataSeriaes instance
-ds = DataSeries(df)
+ds = DataSeries(df, indicators=[
+    SMAIndicator(period=200)
+])
 
 # create instance of BT and set params
-bt = SMABT(ds, balance=1000.0, period=200)
+bt = SMABT(ds, balance=1000.0)
 
 # run backtesting
 bt.run()
