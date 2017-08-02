@@ -41,7 +41,7 @@ df = pd.read_csv('btc_etc.csv').rename(columns={
     'Volume': 'volume'
 })
 
-# create DataSeriaes instance
+# create DataSeries instance
 ds = DataSeries(df, indicators=[
     SMAIndicator(period=200)
 ])
