@@ -41,4 +41,4 @@ class DataSeries:
         return self._data[index + self.index]
 
     def is_end(self):
-        return self.index == (self.data.shape[0] - 1)
+        return self.index == (self.length - 1)
