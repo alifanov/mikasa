@@ -22,14 +22,15 @@ from mikasa import BT, DataSeries, SMAIndicator
 class SMABT(BT):
     # set up how to process each bar
     def process_bar(self):
+        d = self.datas[0]
         if not self.position:
-            if self.ds[0].sma and self.ds[-1].close < self.ds[-1].sma:
-                if self.ds[0].close > self.ds[0].sma:
-                    self.buy(self.ds[0].close, 500.0)
+            if d[0].sma and d[-1].close < d[-1].sma:
+                if d[0].close > d[0].sma:
+                    self.buy(d[0].close, 500.0)
         else:
-            if self.ds[0].sma and self.ds[-1].close > self.ds[-1].sma:
-                if self.ds[0].close < self.ds[0].sma:
-                    self.sell(self.ds[0].close)
+            if d[0].sma and d[-1].close > d[-1].sma:
+                if d[0].close < d[0].sma:
+                    self.sell(d[0].close)
 
 # upload and map data from CSV
 df = pd.read_csv('btc_etc.csv').rename(columns={
@@ -47,7 +48,7 @@ ds = DataSeries(df, indicators=[
 ])
 
 # create instance of BT and set params
-bt = SMABT(ds, balance=1000.0)
+bt = SMABT([ds], balance=1000.0)
 
 # run backtesting
 bt.run()
