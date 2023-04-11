@@ -20,3 +20,9 @@ tests:
 	-v mikasa/tests
 
 	coverage report
+
+clean:
+	rm -rf mikasa.egg-info
+	rm -rf .pytest_cache
+	rm -rf .ruff_cache
+	rm -rf **/.ruff_cache
