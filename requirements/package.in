@@ -1,0 +1,5 @@
+pandas==2.0.0
+numpy==1.24.2
+pytest==7.3.0
+matplotlib==3.7.1
+stockstats==0.5.2
