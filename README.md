@@ -1,5 +1,4 @@
-[![Python Tests](https://github.com/alifanov/mikasa/actions/workflows/main.yml/badge.svg?branch=master&event=push)](https://github.com/alifanov/mikasa/actions/workflows/main.yml)
-
+[![Python Tests](https://github.com/alifanov/mikasa/actions/workflows/main.yml/badge.svg?branch=master&event=push)](https://github.com/alifanov/mikasa/actions/workflows/main.yml) ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/alifanov/mikasa?label=mikasa&sort=semver)
 # Mikasa
 
 Simple backtesting tool
