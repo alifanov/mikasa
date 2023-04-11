@@ -153,3 +153,4 @@ ENV/
 .ropeproject
 
 /.cache/
+.pytest_cache

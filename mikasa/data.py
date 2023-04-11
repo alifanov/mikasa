@@ -14,15 +14,16 @@ class DataSeriesException(Exception):
 
 
 class DataSeries:
-    def __init__(self, data, index=0, indicators=[]):
+    def __init__(self, data, index=0, indicators=None):
         self.data = StockDataFrame.retype(data.copy())
         self.index = index
         self.indicators = indicators
-        self.data.set_index('datetime')
-        for indicator in self.indicators:
-            self.data[indicator.title] = indicator.get_data(self.data, 'close')
-        data_dict = self.data.to_dict(orient='split')
-        self._data = [DataPoint({k: v for k, v in zip(data_dict['columns'], d)}) for d in data_dict['data']]
+        self.data.set_index("datetime")
+        if indicators is not None:
+            for indicator in self.indicators:
+                self.data[indicator.title] = indicator.get_data(self.data, "close")
+        data_dict = self.data.to_dict(orient="split")
+        self._data = [DataPoint({k: v for k, v in zip(data_dict["columns"], d)}) for d in data_dict["data"]]
 
     @property
     def length(self):
@@ -34,10 +35,9 @@ class DataSeries:
 
     def __getitem__(self, index):
         if (index + self.index) < 0:
-            raise DataSeriesException('Result index is negative. Inner index: {}. Parameter index: {}'.format(
-                self.index,
-                index
-            ))
+            raise DataSeriesException(
+                "Result index is negative. Inner index: {}. Parameter index: {}".format(self.index, index)
+            )
         return self._data[index + self.index]
 
     def is_end(self):
