@@ -1,16 +1,3 @@
-# Mikasa
-
-Simple backtesting tool
-
-## Installation
-
-```python
-pip install git+https://github.com/alifanov/mikasa.git
-```
-
-## Usage
-
-```python
 import logging
 
 import numpy as np
@@ -61,5 +48,3 @@ if __name__ == "__main__":
 
     # plot data and indicators
     bt.plot()
-
-```

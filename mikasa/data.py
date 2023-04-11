@@ -18,7 +18,6 @@ class DataSeries:
         self.data = StockDataFrame.retype(data.copy())
         self.index = index
         self.indicators = indicators
-        self.data.set_index("datetime")
         if indicators is not None:
             for indicator in self.indicators:
                 self.data[indicator.title] = indicator.get_data(self.data, "close")
