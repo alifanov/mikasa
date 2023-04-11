@@ -1,3 +1,5 @@
+[![Python Tests](https://github.com/alifanov/mikasa/actions/workflows/main.yml/badge.svg?branch=master&event=push)](https://github.com/alifanov/mikasa/actions/workflows/main.yml)
+
 # Mikasa
 
 Simple backtesting tool
