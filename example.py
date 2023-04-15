@@ -15,17 +15,15 @@ exchange = ccxt.binance()
 class SMABT(BT):
     # set up how to process each bar
     def process_bar(self):
-        d = self.datas[0]
+        d = self.dataseries
         if np.isnan(d[0].sma):
             return
-        if not self.position:
-            if d[-1].close < d[-1].sma:
-                if d[0].close > d[0].sma:
-                    self.buy(d[0].close, 0.001)
-        else:
-            if d[-1].close > d[-1].sma:
-                if d[0].close < d[0].sma:
-                    self.sell(d[0].close)
+        if d[-1].close < d[-1].sma:
+            if d[0].close > d[0].sma:
+                self.buy(d[0].close, 0.005)
+        if d[-1].close > d[-1].sma:
+            if d[0].close < d[0].sma:
+                self.sell(d[0].close)
 
 
 if __name__ == "__main__":
@@ -39,7 +37,7 @@ if __name__ == "__main__":
     ds = DataSeries(df, indicators=[SMAIndicator(period=100)])
 
     # create instance of BT and set params
-    bt = SMABT([ds], balance=1000.0)
+    bt = SMABT(ds, balance=1000.0)
 
     # run backtesting
     bt.run()
