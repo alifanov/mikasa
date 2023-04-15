@@ -95,6 +95,7 @@ class BT:
             self.process_open_orders()
             self.process_bar()
             self.go()
+        self.process_open_orders()
 
     def plot(self):  # pragma: no cover
         data = self.dataseries.data
