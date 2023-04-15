@@ -14,15 +14,21 @@ class DataSeriesException(Exception):
 
 
 class DataSeries:
-    def __init__(self, data, index=0, indicators=None):
+    def __init__(self, data, index=0):
+        self.indicators = []
         self.data = StockDataFrame.retype(data.copy())
         self.index = index
-        self.indicators = indicators
-        if indicators is not None:
-            for indicator in self.indicators:
-                self.data[indicator.title] = indicator.get_data(self.data, "close")
+        self.prepare()
+
+    def prepare(self):
         data_dict = self.data.to_dict(orient="split")
         self._data = [DataPoint({k: v for k, v in zip(data_dict["columns"], d)}) for d in data_dict["data"]]
+
+    def add_indicators(self, indicators):
+        self.indicators = indicators
+        for indicator in self.indicators:
+            self.data[indicator.title] = indicator.get_data(self.data, "close")
+        self.prepare()
 
     @property
     def length(self):

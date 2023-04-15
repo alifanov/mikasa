@@ -58,3 +58,23 @@ class EMAIndicator(BaseIndicator):
 
     def get_data(self, df, field_name):
         return df["{}_{}_ema".format(field_name, self.period)]
+
+
+class MACDIndicator(BaseIndicator):
+    def __init__(self, short_period=12, long_period=26, signal_period=9, title="macd"):
+        super(MACDIndicator, self).__init__(title, draw_inline=False)
+        self.short_period = short_period
+        self.long_period = long_period
+        self.signal_period = signal_period
+        self.draw_inline = False
+
+    def draw_extra_charts(self, axe):  # pragma: no cover
+        axe.axhline(y=0, xmin=0, xmax=1, c="red", zorder=0, linewidth=1)
+
+    def get_data(self, df, field_name):
+        short_ema = df[field_name].ewm(span=self.short_period, adjust=False).mean()
+        long_ema = df[field_name].ewm(span=self.long_period, adjust=False).mean()
+        macd = short_ema - long_ema
+        signal_line = macd.ewm(span=self.signal_period, adjust=False).mean()
+
+        return macd - signal_line

@@ -47,6 +47,9 @@ class BT:
         self.open_orders = []
         self.order_history = []
 
+    def prepare_data(self):
+        pass
+
     def buy(self, price, shares_volume):
         if self.balance < price * shares_volume:
             logger.warning("Can not execute order due to not enough balance")
@@ -91,10 +94,13 @@ class BT:
         self.open_orders = rest_orders
 
     def run(self):
+        self.prepare_data()
+
         while not self.dataseries.is_end():
             self.process_open_orders()
             self.process_bar()
             self.go()
+
         self.process_open_orders()
 
     def plot(self):  # pragma: no cover
@@ -115,10 +121,10 @@ class BT:
         nrows = len(outline_indicators) + 1
         fig, axes = plt.subplots(nrows=nrows, ncols=1)
 
-        data.plot(ax=axes, sharex=True)
+        data.plot(ax=axes[0], sharex=True)
 
         for i, oi in enumerate(outline_indicators):
-            outline_data[oi.title].plot(ax=axes[i + 1], sharex=True)
+            outline_data[oi.title].plot(ax=axes[i + 1], sharex=True, title=oi.title)
             oi.draw_extra_charts(axes[i + 1])
 
         buy_orders = [it for it in self.open_orders if it.type == OrderType.BUY]
