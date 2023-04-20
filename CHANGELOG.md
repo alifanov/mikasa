@@ -1,3 +1,10 @@
+## 0.3.0 (2023-04-20)
+
+### Feat
+
+- add trade pct support
+- add commission support
+
 ## 0.2.0 (2023-04-15)
 
 ### Feat
