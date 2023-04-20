@@ -39,6 +39,9 @@ class BTException(Exception):
 
 
 class BT:
+    trade_pct = 0.01
+    trade_amount = None
+
     def __init__(self, dataseries, balance=1000.0):
         self.dataseries = dataseries
         self.balance = balance
@@ -46,6 +49,11 @@ class BT:
         self.fund = 0
         self.open_orders = []
         self.order_history = []
+
+    def get_trade_amount(self):
+        if self.trade_amount is None:
+            return self.balance * self.trade_pct
+        return self.trade_amount
 
     def prepare_data(self):
         pass

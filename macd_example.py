@@ -13,6 +13,8 @@ exchange = ccxt.binance()
 
 # create strategy for backtesting
 class MACDBT(BT):
+    trade_amount = 0.05
+
     def prepare_data(self):
         macd_indicator = MACDIndicator()
         self.dataseries.add_indicators(
@@ -27,7 +29,7 @@ class MACDBT(BT):
         if np.isnan(d[0].macd):
             return
         if d[0].macd > 0 and d[-1].macd < 0:
-            self.buy(d[0].close, 0.005)
+            self.buy(d[0].close, self.get_trade_amount())
         elif d[0].macd < 0 and d[-1].macd > 0:
             self.sell(d[0].close)
 
