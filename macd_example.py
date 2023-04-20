@@ -13,7 +13,7 @@ exchange = ccxt.binance()
 
 # create strategy for backtesting
 class MACDBT(BT):
-    trade_amount = 0.05
+    trade_amount = 0.005
 
     def prepare_data(self):
         macd_indicator = MACDIndicator()
