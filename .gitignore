@@ -156,3 +156,4 @@ ENV/
 .pytest_cache
 .ruff_cache
 .idea
+experiments

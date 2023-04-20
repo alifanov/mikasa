@@ -24,13 +24,13 @@ class Order:
     def can_be_executed(self):
         return True
 
-    def execute(self, dt):
+    def execute(self, dt, commission_fraction):
         if self.type == OrderType.BUY:
             self.executed_at = dt
-            return self.volume, -self.volume * self.price
+            return self.volume, -self.volume * self.price * (1.0 - commission_fraction)
         if self.type == OrderType.SELL:
             self.executed_at = dt
-            return -self.volume, self.volume * self.price
+            return -self.volume, self.volume * self.price * (1.0 - commission_fraction)
         raise ValueError("Order type is bad")
 
 
@@ -84,7 +84,9 @@ class BT:
         rest_orders = []
         for order in self.open_orders:
             if order.can_be_executed():
-                fund, balance = order.execute(dt=self.dataseries[0].datetime)
+                fund, balance = order.execute(
+                    dt=self.dataseries[0].datetime, comission_fraction=self.commission_fraction
+                )
                 self.order_history.append(order)
                 self.fund += fund
                 self.balance += balance
