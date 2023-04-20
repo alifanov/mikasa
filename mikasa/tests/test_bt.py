@@ -34,8 +34,8 @@ class BTTestCase(TestCase):
         bt.go()
         bt.process_open_orders()
         self.assertEqual(bt.fund, 0)
-        self.assertEqual(bt.get_profit(), 1.5)
-        self.assertEqual(bt.get_roi(), 1.0)
+        self.assertEqual(bt.get_profit(), 1.4985)
+        self.assertEqual(bt.get_roi(), 0.999)
 
         self.assertEqual(bt.dataseries[0].close, 3.5)
 
@@ -61,5 +61,5 @@ class BTTestCase(TestCase):
         bt.run()
 
         self.assertEqual(bt.fund, 0)
-        self.assertEqual(bt.get_profit(), 1.5)
-        self.assertEqual(bt.get_roi(), 1.0)
+        self.assertEqual(bt.get_profit(), 1.4985)
+        self.assertEqual(bt.get_roi(), 0.999)

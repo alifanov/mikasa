@@ -41,6 +41,7 @@ class BTException(Exception):
 class BT:
     trade_pct = 0.01
     trade_amount = None
+    commission_fraction = 0.001
 
     def __init__(self, dataseries, balance=1000.0):
         self.dataseries = dataseries
@@ -93,7 +94,7 @@ class BT:
         for order in self.open_orders:
             if order.can_be_executed():
                 fund, balance = order.execute(
-                    dt=self.dataseries[0].datetime, comission_fraction=self.commission_fraction
+                    dt=self.dataseries[0].datetime, commission_fraction=self.commission_fraction
                 )
                 self.order_history.append(order)
                 self.fund += fund
