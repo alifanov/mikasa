@@ -1,62 +1,10 @@
 import logging
-from dataclasses import dataclass
-from datetime import datetime
-from enum import Enum
-from typing import Optional
 
 import matplotlib.pyplot as plt
 
+from mikasa.orders import LimitOrder, OrderType, TrailingStopLossOrder
+
 logger = logging.getLogger(__name__)
-
-
-class OrderType(Enum):
-    BUY = "BUY"
-    SELL = "SELL"
-
-
-@dataclass
-class BaseOrder:
-    type: OrderType
-    price: float
-    volume: float
-    executed_at: Optional[datetime]
-
-    def update_trailing_state(self, high, low):
-        pass
-
-    def can_be_executed(self, high, low):
-        if self.type == OrderType.BUY:
-            return low < self.price
-        if self.type == OrderType.SELL:
-            return high > self.price
-
-    def execute(self, dt, commission_fraction):
-        balance_delta = self.volume * self.price * (1.0 - commission_fraction)
-        if self.type == OrderType.BUY:
-            self.executed_at = dt
-            return self.volume, -balance_delta
-        if self.type == OrderType.SELL:
-            self.executed_at = dt
-            return -self.volume, balance_delta
-        raise ValueError("Order type is bad")
-
-    class Meta:
-        abstract = True
-
-
-class LimitOrder(BaseOrder):
-    pass
-
-
-@dataclass
-class TrailingStopLossOrder(BaseOrder):
-    trail_percent: float
-
-    def update_trailing_state(self, high, low):
-        if self.type == OrderType.BUY:
-            self.price = low * (1.0 - self.trail_percent)
-        if self.type == OrderType.SELL:
-            self.price = high * (1.0 - self.trail_percent)
 
 
 class BTException(Exception):
@@ -78,7 +26,7 @@ class BT:
 
     def close_open_orders(self):
         for order in self.open_orders:
-            logger.info(f"Cancel [{order.type.upper()}]")
+            logger.info(f"Canceled [{order.type.upper()}]")
         self.open_orders = []
 
     def get_trade_amount(self):
@@ -108,7 +56,7 @@ class BT:
     def sell(self, price):
         if self.fund:
             dt = self.dataseries[0].datetime
-            order = LimitOrder(type=OrderType.SELL, price=price, volume=self.fund, trail_percent=0.3, executed_at=None)
+            order = LimitOrder(type=OrderType.SELL, price=price, volume=self.fund, executed_at=None)
             self.open_orders.append(order)
             logger.info(f"[SELL] created {dt=} {price=:.2f} volume={self.fund:.2f}")
 
