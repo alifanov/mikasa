@@ -15,23 +15,48 @@ class OrderType(Enum):
 
 
 @dataclass
-class Order:
+class BaseOrder:
     type: OrderType
     price: float
     volume: float
-    executed_at: Optional[datetime] = None
+    executed_at: Optional[datetime]
 
-    def can_be_executed(self):
-        return True
+    def update_trailing_state(self, high, low):
+        pass
+
+    def can_be_executed(self, high, low):
+        if self.type == OrderType.BUY:
+            return low < self.price
+        if self.type == OrderType.SELL:
+            return high > self.price
 
     def execute(self, dt, commission_fraction):
+        balance_delta = self.volume * self.price * (1.0 - commission_fraction)
         if self.type == OrderType.BUY:
             self.executed_at = dt
-            return self.volume, -self.volume * self.price * (1.0 - commission_fraction)
+            return self.volume, -balance_delta
         if self.type == OrderType.SELL:
             self.executed_at = dt
-            return -self.volume, self.volume * self.price * (1.0 - commission_fraction)
+            return -self.volume, balance_delta
         raise ValueError("Order type is bad")
+
+    class Meta:
+        abstract = True
+
+
+class LimitOrder(BaseOrder):
+    pass
+
+
+@dataclass
+class TrailingStopLossOrder(BaseOrder):
+    trail_percent: float
+
+    def update_trailing_state(self, high, low):
+        if self.type == OrderType.BUY:
+            self.price = low * (1.0 - self.trail_percent)
+        if self.type == OrderType.SELL:
+            self.price = high * (1.0 - self.trail_percent)
 
 
 class BTException(Exception):
@@ -51,6 +76,11 @@ class BT:
         self.open_orders = []
         self.order_history = []
 
+    def close_open_orders(self):
+        for order in self.open_orders:
+            logger.info(f"Cancel [{order.type.upper()}]")
+        self.open_orders = []
+
     def get_trade_amount(self):
         if self.trade_amount is None:
             return self.balance * self.trade_pct
@@ -65,14 +95,20 @@ class BT:
             return
 
         dt = self.dataseries[0].datetime
-        order = Order(type=OrderType.BUY, price=price, volume=shares_volume)
+        order = LimitOrder(type=OrderType.BUY, price=price, volume=shares_volume, executed_at=None)
         self.open_orders.append(order)
         logger.info(f"[BUY] created {dt=} {price=:.2f} {shares_volume=:.2f}")
+
+        trailing_stop_loss_order = TrailingStopLossOrder(
+            type=OrderType.SELL, price=price, volume=shares_volume, trail_percent=0.2, executed_at=None
+        )
+        self.open_orders.append(trailing_stop_loss_order)
+        logger.info(f"Stop loss [SELL] created {dt=} {price=:.2f} {shares_volume=:.2f}")
 
     def sell(self, price):
         if self.fund:
             dt = self.dataseries[0].datetime
-            order = Order(type=OrderType.SELL, price=price, volume=self.fund)
+            order = LimitOrder(type=OrderType.SELL, price=price, volume=self.fund, trail_percent=0.3, executed_at=None)
             self.open_orders.append(order)
             logger.info(f"[SELL] created {dt=} {price=:.2f} volume={self.fund:.2f}")
 
@@ -90,17 +126,17 @@ class BT:
 
     def process_open_orders(self):
         dt = self.dataseries[0].datetime
+        dp = self.dataseries[0]
         rest_orders = []
         for order in self.open_orders:
-            if order.can_be_executed():
-                fund, balance = order.execute(
-                    dt=self.dataseries[0].datetime, commission_fraction=self.commission_fraction
-                )
+            if order.can_be_executed(dp.high, dp.low):
+                fund, balance = order.execute(dt=dt, commission_fraction=self.commission_fraction)
                 self.order_history.append(order)
                 self.fund += fund
                 self.balance += balance
                 logger.info(f"Executed [{order.type}] {dt=} balance={self.balance:.2f}")
             else:
+                order.update_trailing_state(dp.high, dp.low)
                 rest_orders.append(order)
         self.open_orders = rest_orders
 
@@ -112,7 +148,11 @@ class BT:
             self.process_bar()
             self.go()
 
+        self.sell(self.dataseries[0].close)
+
         self.process_open_orders()
+
+        self.close_open_orders()
 
     def plot(self):  # pragma: no cover
         data = self.dataseries.data

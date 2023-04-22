@@ -30,8 +30,6 @@ class MACDBT(BT):
             return
         if d[0].macd > 0 and d[-1].macd < 0:
             self.buy(d[0].close, self.get_trade_amount())
-        elif d[0].macd < 0 and d[-1].macd > 0:
-            self.sell(d[0].close)
 
 
 if __name__ == "__main__":
