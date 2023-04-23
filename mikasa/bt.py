@@ -16,17 +16,19 @@ class BT:
     trade_amount = None
     commission_fraction = 0.001
 
-    def __init__(self, dataseries, balance=1000.0):
+    def __init__(self, dataseries, balance=1000.0, verbose=True):
         self.dataseries = dataseries
         self.balance = balance
         self.start_balance = balance
         self.fund = 0
         self.open_orders = []
         self.order_history = []
+        self.verbose = verbose
 
     def close_open_orders(self):
         for order in self.open_orders:
-            logger.info(f"Canceled [{order.type.upper()}]")
+            if self.verbose:
+                logger.info(f"Canceled [{order.type.upper()}]")
         self.open_orders = []
 
     def get_trade_amount(self):
@@ -39,26 +41,30 @@ class BT:
 
     def buy(self, price, shares_volume):
         if self.balance < price * shares_volume:
-            logger.warning("Can not execute order due to not enough balance")
+            if self.verbose:
+                logger.warning("Can not execute order due to not enough balance")
             return
 
         dt = self.dataseries[0].datetime
         order = LimitOrder(type=OrderType.BUY, price=price, volume=shares_volume, executed_at=None)
         self.open_orders.append(order)
-        logger.info(f"[BUY] created {dt=} {price=:.2f} {shares_volume=:.2f}")
+        if self.verbose:
+            logger.info(f"[BUY] created {dt=} {price=:.2f} {shares_volume=:.2f}")
 
         trailing_stop_loss_order = TrailingStopLossOrder(
             type=OrderType.SELL, price=price, volume=shares_volume, trail_percent=0.2, executed_at=None
         )
         self.open_orders.append(trailing_stop_loss_order)
-        logger.info(f"Stop loss [SELL] created {dt=} {price=:.2f} {shares_volume=:.2f}")
+        if self.verbose:
+            logger.info(f"Stop loss [SELL] created {dt=} {price=:.2f} {shares_volume=:.2f}")
 
     def sell(self, price):
         if self.fund:
             dt = self.dataseries[0].datetime
             order = LimitOrder(type=OrderType.SELL, price=price, volume=self.fund, executed_at=None)
             self.open_orders.append(order)
-            logger.info(f"[SELL] created {dt=} {price=:.2f} volume={self.fund:.2f}")
+            if self.verbose:
+                logger.info(f"[SELL] created {dt=} {price=:.2f} volume={self.fund:.2f}")
 
     def process_bar(self):
         pass
@@ -82,7 +88,8 @@ class BT:
                 self.order_history.append(order)
                 self.fund += fund
                 self.balance += balance
-                logger.info(f"Executed [{order.type}] {dt=} balance={self.balance:.2f}")
+                if self.verbose:
+                    logger.info(f"Executed [{order.type}] {dt=} balance={self.balance:.2f}")
             else:
                 order.update_trailing_state(dp.high, dp.low)
                 rest_orders.append(order)
@@ -102,7 +109,7 @@ class BT:
 
         self.close_open_orders()
 
-    def plot(self):  # pragma: no cover
+    def plot(self, title):  # pragma: no cover
         data = self.dataseries.data
         data.set_index("datetime", inplace=True)
         headers = ["close"]
@@ -120,7 +127,7 @@ class BT:
         nrows = len(outline_indicators) + 1
         fig, axes = plt.subplots(nrows=nrows, ncols=1)
 
-        data.plot(ax=axes[0], sharex=True)
+        data.plot(ax=axes[0], sharex=True, title=title)
 
         for i, oi in enumerate(outline_indicators):
             outline_data[oi.title].plot(ax=axes[i + 1], sharex=True, title=oi.title)
