@@ -26,10 +26,10 @@ class BTTestCase(TestCase):
         self.assertEqual(bt.balance, 1.5)
 
         bt.buy(ds[0].close, 1.0)
-        self.assertIsNotNone(bt.fund)
 
         bt.go()
         bt.process_open_orders()
+        self.assertIsNotNone(bt.fund)
         bt.sell(ds[0].close)
         bt.go()
         bt.process_open_orders()
