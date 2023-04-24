@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name="mikasa",
     packages=["mikasa"],
-    version="0.3.0",
+    version="0.4.0",
     description="Simple backtesting tool",
     author="Alexander Lifanov",
     author_email="lifanov.a.v@gmail.com",

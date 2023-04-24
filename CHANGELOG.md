@@ -1,3 +1,18 @@
+## 0.4.0 (2023-04-24)
+
+### Feat
+
+- add hyper search of params support
+- add support for trailing stop loss order
+
+### Fix
+
+- tests to pass
+- add tests for orders
+- use trade percent to trade amount from price
+- add test for orders
+- refactor orders
+
 ## 0.3.0 (2023-04-20)
 
 ### Feat
