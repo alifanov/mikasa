@@ -31,9 +31,11 @@ class BT:
                 logger.info(f"Canceled [{order.type.upper()}]")
         self.open_orders = []
 
-    def get_trade_amount(self):
+    def get_trade_amount(self, price: float = None):
+        if price is None:
+            raise ValueError("price is None")
         if self.trade_amount is None:
-            return self.balance * self.trade_pct
+            return (self.balance * self.trade_pct) * price
         return self.trade_amount
 
     def prepare_data(self):
