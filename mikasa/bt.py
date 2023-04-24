@@ -25,7 +25,7 @@ class BT:
         self.order_history = []
         self.verbose = verbose
 
-    def close_open_orders(self):
+    def cancel_open_orders(self):
         for order in self.open_orders:
             if self.verbose:
                 logger.info(f"Canceled [{order.type.upper()}]")
@@ -90,7 +90,7 @@ class BT:
         dp = self.dataseries[0]
         rest_orders = []
         for order in self.open_orders:
-            if order.can_be_executed(dp.high, dp.low):
+            if order.can_be_executed(dp.high, dp.low, self.fund, self.balance):
                 fund, balance = order.execute(dt=dt, commission_fraction=self.commission_fraction)
                 self.order_history.append(order)
                 self.fund += fund
@@ -114,7 +114,7 @@ class BT:
 
         self.process_open_orders()
 
-        self.close_open_orders()
+        self.cancel_open_orders()
 
     def plot(self, title):  # pragma: no cover
         data = self.dataseries.data
