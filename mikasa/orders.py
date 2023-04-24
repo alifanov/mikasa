@@ -48,7 +48,5 @@ class TrailingStopLossOrder(BaseOrder):
     trail_percent: float
 
     def update_trailing_state(self, high, low):
-        if self.type == OrderType.BUY:
-            self.price = low * (1.0 - self.trail_percent)
         if self.type == OrderType.SELL:
-            self.price = high * (1.0 - self.trail_percent)
+            self.price = low * (1.0 - self.trail_percent)

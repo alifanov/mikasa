@@ -39,7 +39,7 @@ class BTTestCase(TestCase):
 
         self.assertEqual(bt.dataseries[0].close, 3.5)
 
-    def test_bt_strat(self):
+    def test_bt_strategy(self):
         class SimpleBT(BT):
             def process_bar(self):
                 if self.dataseries[0].close == 1.5:

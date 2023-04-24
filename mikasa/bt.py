@@ -51,8 +51,13 @@ class BT:
         if self.verbose:
             logger.info(f"[BUY] created {dt=} {price=:.2f} {shares_volume=:.2f}")
 
+        trail_percent = 0.2
         trailing_stop_loss_order = TrailingStopLossOrder(
-            type=OrderType.SELL, price=price, volume=shares_volume, trail_percent=0.2, executed_at=None
+            type=OrderType.SELL,
+            price=price * (1.0 - trail_percent),
+            volume=shares_volume,
+            trail_percent=trail_percent,
+            executed_at=None,
         )
         self.open_orders.append(trailing_stop_loss_order)
         if self.verbose:
