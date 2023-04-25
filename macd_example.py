@@ -100,7 +100,11 @@ class HyperSearch:
 
 def backtest_best_run(short_period, long_period, signal_period):
     # upload and map data from CSV
-    ohlcv = exchange.fetch_ohlcv(best_params["pair"], timeframe=best_params["timeperiod"], limit=300)
+    ohlcv = exchange.fetch_ohlcv(
+        best_params["pair"],
+        timeframe=best_params["timeperiod"],
+        limit=300,
+    )
 
     df = pd.DataFrame(ohlcv, columns=["datetime", "open", "high", "low", "close", "volume"])
     df["datetime"] = pd.to_datetime(df["datetime"], unit="ms")
@@ -129,18 +133,13 @@ def backtest_best_run(short_period, long_period, signal_period):
 
 
 if __name__ == "__main__":
-    # hyper_search = HyperSearch()
-    # hyper_search.run()
-    # best_run = hyper_search.get_best_run()
-    # logger.info(f"Best run: profit={best_run[1]:.2f}")
-    # logger.info(f"Best run: ROI={best_run[0] * 100.:.2f}")
-    # best_params = best_run[2]
-    best_params = {
-        "pair": "BTC/USDT",
-        "timeperiod": "1d",
-        "macd": {"short_period": 10, "long_period": 29, "signal_period": 13},
-    }
-    # logger.info(f"Best params: {best_run=}")
+    hyper_search = HyperSearch()
+    hyper_search.run()
+    best_run = hyper_search.get_best_run()
+    logger.info(f"Best run: profit={best_run[1]:.2f}")
+    logger.info(f"Best run: ROI={best_run[0] * 100.:.2f}")
+    best_params = best_run[2]
+    logger.info(f"Best params: {best_run=}")
 
     macd_best_params = best_params["macd"]
     short_period = macd_best_params["short_period"]
