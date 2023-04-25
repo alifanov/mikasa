@@ -1,3 +1,9 @@
+## 0.4.1 (2023-04-25)
+
+### Fix
+
+- markers for orders on plot
+
 ## 0.4.0 (2023-04-24)
 
 ### Feat
