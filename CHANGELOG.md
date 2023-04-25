@@ -1,3 +1,9 @@
+## 0.4.2 (2023-04-25)
+
+### Fix
+
+- update example for hypersearch
+
 ## 0.4.1 (2023-04-25)
 
 ### Fix
