@@ -38,8 +38,9 @@ class BT:
             return (self.balance * self.trade_pct) * price
         return self.trade_amount
 
-    def prepare_data(self):
-        pass
+    def prepare_data(self, indicators=None):
+        if indicators is not None:
+            self.dataseries.add_indicators(indicators=indicators)
 
     def buy(self, price, shares_volume):
         if self.balance < price * shares_volume:
@@ -140,16 +141,15 @@ class BT:
             outline_data[oi.title].plot(ax=axes[i + 1], sharex=True, title=oi.title)
             oi.draw_extra_charts(axes[i + 1])
 
-        buy_orders = [it for it in self.open_orders if it.type == OrderType.BUY]
-        sell_orders = [it for it in self.open_orders if it.type == OrderType.SELL]
+        buy_orders = [it for it in self.order_history if it.type == OrderType.BUY]
+        sell_orders = [it for it in self.order_history if it.type == OrderType.SELL]
 
-        self._draw_orders(buy_orders, marker="g^")
-
-        self._draw_orders(sell_orders, marker="rv")
+        self._draw_orders(buy_orders, marker="g^", ax=axes[0])
+        self._draw_orders(sell_orders, marker="rv", ax=axes[0])
 
         plt.show()
 
-    def _draw_orders(self, orders, marker):
+    def _draw_orders(self, orders, marker, ax):
         order_datetimes = [order.executed_at for order in orders]
         order_prices = [order.price for order in orders]
-        plt.plot(order_datetimes, order_prices, marker)
+        ax.plot(order_datetimes, order_prices, marker)
