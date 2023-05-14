@@ -77,4 +77,5 @@ class MACDIndicator(BaseIndicator):
         macd = short_ema - long_ema
         signal_line = macd.ewm(span=self.signal_period, adjust=False).mean()
 
-        return macd - signal_line
+        result = macd - signal_line
+        return result

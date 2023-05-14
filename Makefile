@@ -15,11 +15,12 @@ version:
 	cz bump --changelog
 
 tests:
-	pytest \
-	--cov=mikasa
-	-v mikasa/tests
+	pytest -v \
+	--cov=mikasa \
+	mikasa/tests
 
 	coverage report
+	coverage html
 
 clean:
 	rm -rf mikasa.egg-info

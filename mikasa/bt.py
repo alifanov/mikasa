@@ -38,10 +38,6 @@ class BT:
             return (self.balance * self.trade_pct) * price
         return self.trade_amount
 
-    def prepare_data(self, indicators=None):
-        if indicators is not None:
-            self.dataseries.add_indicators(indicators=indicators)
-
     def buy(self, price, shares_volume):
         if self.balance < price * shares_volume:
             if self.verbose:
@@ -104,8 +100,6 @@ class BT:
         self.open_orders = rest_orders
 
     def run(self):
-        self.prepare_data()
-
         while not self.dataseries.is_end():
             self.process_open_orders()
             self.process_bar()
